@@ -1,0 +1,14 @@
+[flake8]
+ignore = D203
+max-line-length = 150
+exclude = .git,
+        __pycache__,
+        docs,
+        build,
+        dist,
+        *.egg-info,
+        .eggs
+        venv
+        __init__.py
+import-order-style = google
+max-complexity = 10
