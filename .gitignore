@@ -74,3 +74,6 @@ lib
 
 # spark output
 metastore_db/
+
+# jupyter
+.ipynb_checkpoints/
