@@ -203,7 +203,7 @@ dev_require = [req.strip() for req in read(dev_req_path).splitlines() if req.str
 extras_require = {"dev": dev_require}
 
 setup(
-    name="project_template",
+    name="cathay",
     version="1.0",
     author="Cathay",
     description="python project",
