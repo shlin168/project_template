@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class SubmitSparkJob(SubmitJob, CathaySparkSession):
 
     def __init__(self, config):
-        super(SubmitJob, self).__init__(config)
+        super(SubmitSparkJob, self).__init__(config)
 
     def start(self):
         try:
