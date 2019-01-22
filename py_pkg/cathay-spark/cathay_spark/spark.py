@@ -28,7 +28,7 @@ class SparkBuilder(object):
 
         # create SparkSession object
         spark = self.spark_builder.getOrCreate()
-        SparkBuilder.get_logger(spark)
+
         return spark
 
     def set_extra_config(self):
@@ -39,8 +39,7 @@ class SparkBuilder(object):
     @staticmethod
     def get_logger(spark):
         logger = spark.sparkContext._jvm.org.apache.log4j
-        logger.LogManager.getLogger('org').setLevel(logger.Level.INFO)
+        logger.LogManager.getLogger('org').setLevel(logger.Level.ERROR)
         logger.LogManager.getLogger('akka').setLevel(logger.Level.ERROR)
-        logger.LogManager.getRootLogger().setLevel(logger.Level.ERROR)
 
         return logger

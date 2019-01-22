@@ -60,10 +60,9 @@ class SparkSession(object):
 
     def _set_spark_logger(self):
         logger = SparkBuilder.get_logger(self.spark)
-        # logger.LogManager.getLogger('org').setLevel(logger.Level.INFO)
+
+        # set custom log level after sparkSession create
         logger.LogManager.getRootLogger().setLevel(logger.Level.INFO)
-        logger.LogManager.getLogger(__name__).info("log from spark")
-        logger.LogManager.getLogger(__name__).warn("log from spark")
 
     def set_spark_session(self):
         if self.config is None:
