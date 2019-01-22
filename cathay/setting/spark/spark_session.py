@@ -1,7 +1,8 @@
 import os
 import logging
+import six
 
-from cathay_spark import get_spark
+from cathay_spark import SparkBuilder
 
 from cathay.setting.config.config_utils import get_full_keys
 
@@ -12,6 +13,7 @@ class SparkSession(object):
 
     spark = None
     mode = None
+    spark_configs = None
 
     def __init__(self, config=None):
         self.config = config
@@ -38,31 +40,39 @@ class SparkSession(object):
         else:
             self.mode = 'yarn'
 
-    def _init_spark_session(self):
-        '''
-            init spark session from default base config
-        '''
-        logger.info('get spark session, mode: {} ...'.format(self.mode))
-        self.spark = get_spark(self.app_name, self.mode)
-
     def _set_spark_session_conf(self):
         '''
             set spark session from conf/spark.conf
         '''
         logger.info('set spark configuration ...')
-        spark_configs = get_full_keys(self.config.get("spark", None), "spark")
+        self.spark_configs = get_full_keys(self.config.get("spark", None), "spark")
+        for key in self.spark_configs:
+            if isinstance(self.spark_configs[key], six.string_types):
+                self.spark_configs[key] = self.spark_configs[key].replace('$(APP_HOME)', os.environ['APP_HOME'])
 
-        for k, v in spark_configs.items():
-            logger.info("{} = {}".format(k, v))
-            self.spark.conf.set(k, v)
+    def _init_spark_session(self):
+        '''
+            init spark session from default base config
+        '''
+        logger.info('get spark session, mode: {} ...'.format(self.mode))
+        sb = SparkBuilder(self.app_name, self.mode, self.spark_configs)
+        self.spark = sb.get_spark()
+
+    def _set_spark_logger(self):
+        logger = SparkBuilder.get_logger(self.spark)
+        # logger.LogManager.getLogger('org').setLevel(logger.Level.INFO)
+        logger.LogManager.getRootLogger().setLevel(logger.Level.INFO)
+        logger.LogManager.getLogger(__name__).info("log from spark")
+        logger.LogManager.getLogger(__name__).warn("log from spark")
 
     def set_spark_session(self):
         if self.config is None:
             self._set_config()
         self._set_spark_mode()
         self._set_spark_app_name()
-        self._init_spark_session()
         self._set_spark_session_conf()
+        self._init_spark_session()
+        self._set_spark_logger()
 
     def get_spark_session(self):
         if self.spark is None:

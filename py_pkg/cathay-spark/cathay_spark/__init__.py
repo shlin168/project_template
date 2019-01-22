@@ -1,1 +1,1 @@
-from spark import get_spark
+from spark import SparkBuilder
