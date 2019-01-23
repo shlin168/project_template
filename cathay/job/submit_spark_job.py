@@ -1,5 +1,5 @@
 import logging
-from cathay_time_utils import TimeUtils
+from cathay_time_utils.time_utils import TimeUtils
 
 from cathay.setting.spark.spark_session import SparkSession as CathaySparkSession
 from cathay.job.submit_job import SubmitJob

@@ -5,7 +5,7 @@ import traceback
 from pyhocon import ConfigTree
 
 import logging
-from cathay_configger import Configger
+from cathay_configger.configger import Configger
 
 logger = logging.getLogger(__name__)
 
