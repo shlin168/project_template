@@ -4,7 +4,7 @@ import traceback
 
 import click
 import logging
-from cathay_time_utils import TimeUtils
+from cathay_time_utils.time_utils import TimeUtils
 
 from cathay.setting.config.config_utils import merge_env_configs
 from cathay.job.submit_spark_job import SubmitSparkJob as SubmitJob
