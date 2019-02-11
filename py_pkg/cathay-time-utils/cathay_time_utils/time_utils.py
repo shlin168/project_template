@@ -1,4 +1,5 @@
 import time
+from six import string_types
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 from pytz import timezone
@@ -47,7 +48,7 @@ class TimeUtils(object):
             input:  base:type(int | datetime | date | string)
             output: datetime:type(datetime)
         '''
-        if isinstance(base, str):
+        if isinstance(base, string_types):
             base = datetime.strptime(base, fmt)
 
         elif isinstance(base, int):
