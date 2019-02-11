@@ -1,2 +1,7 @@
+# template
 click==6.6
-#pyarrow==0.10.0
+
+# spark
+# pyarrow==0.10.0
+
+# app

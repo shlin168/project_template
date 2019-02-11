@@ -1,0 +1,17 @@
+# cathay template libraries
+py_pkg/cathay-spark/dist/cathay_spark-1.0-py2-none-any.whl
+cathay-spark==1.0
+
+py_pkg/cathay-configger/dist/cathay_configger-1.0-py2-none-any.whl
+cathay-configger==1.0
+
+py_pkg/cathay-logger/dist/cathay_logger-1.0-py2-none-any.whl
+cathay-logger==1.0
+
+py_pkg/cathay-decorators/dist/cathay_decorators-1.0-py2-none-any.whl
+cathay-decorators==1.0
+
+py_pkg/cathay-time-utils/dist/cathay_time_utils-1.0-py2-none-any.whl
+cathay-time-utils==1.0
+
+# cathay user-defined libraries

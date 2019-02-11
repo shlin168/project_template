@@ -79,7 +79,7 @@ class PyTest(TestCommand):
 
 class InstallLibs(Command):
     """
-        install packages in py_pkg
+        build packages in py_pkg and install packages from docs/requirements-lib.txt
         usage:
             python setup.py lib [-p py_pkg | --lib-path=py_pkg] [--pip-args="{pip-args}"]
         notice
@@ -98,18 +98,26 @@ class InstallLibs(Command):
             print('pip-args not set, using: https://pypi.org/simple/')
 
     def run(self):
-        install_cmd = "python setup.py install"
-        if self.pip_args is not None:
-            install_cmd += ' --pip-args="{}"'.format(self.pip_args)
+        # build packages inside py_pkg
+        build_cmd = "python setup.py bdist_wheel"
 
         project_dir = os.getcwd()
         if self.lib_path is not None:
             for pkg in os.listdir(self.lib_path):
                 print(os.path.join(project_dir, self.lib_path, pkg))
                 os.chdir(os.path.join(project_dir, self.lib_path, pkg))
-                os.system(install_cmd)
+                os.system(build_cmd)
         else:
-            print('set py_pkg path')
+            raise ValueError('set py_pkg path')
+
+        # install from docs/requirements-lib.txt
+        os.chdir(project_dir)
+        lib_path = 'docs/requirements-lib.txt'
+        install_cmd = "pip install -r " + lib_path
+
+        if self.pip_args is not None:
+            install_cmd += ' ' + self.pip_args
+        os.system(install_cmd)
 
 
 class InstallExtra(Command):
