@@ -4,8 +4,8 @@ click==6.6
 # template - jupyter
 ipython==5.8.0
 ipykernel==4.10.0
+jupyter-console==5.2.0
 papermill==0.16.2
-jupyter==1.0.0
 
 # spark
 # pyarrow==0.10.0
