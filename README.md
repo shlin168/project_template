@@ -124,3 +124,33 @@ python setup.py clean
 # clean with .egg folder
 python setup.py clean -e
 ```
+
+### requirements
+
+`docs`資料夾下有三個`requirements檔案`
+* requirements: 第三方套件
+
+範例：
+```
+click==6.6
+```
+* requirements-lib: local 套件
+> 套件程式需放在`py_pkg`資料夾內，且符合setuptool格式．建構專案時會安裝在`py_pkg`資料夾內的所有程式
+
+測試方式：
+```
+cd py_pkg/cathay-spark
+python setup.py bdist_wheel
+```
+正確的話會在 py_pkg/cathay-spark/dist 看到.whl檔案
+
+範例：
+```
+py_pkg/cathay-spark/dist/cathay_spark-1.0-py2-none-any.whl
+cathay-spark==1.0
+```
+* requirements-dev: 測試套件
+範例：
+```
+pytest==3.7.4
+```
