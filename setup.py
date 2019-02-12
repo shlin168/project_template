@@ -69,11 +69,11 @@ class PyTest(TestCommand):
         TestCommand.run(self)
 
     def run_tests(self):
+        import shlex
         # import here, cause outside the eggs aren't loaded
         import pytest
         # pytest should pass list object to main, so turn it to list if there's only one option
-        pytest_args = [self.pytest_args] if isinstance(self.pytest_args, basestring) else self.pytest_args
-        errno = pytest.main(pytest_args)
+        errno = pytest.main(shlex.split(self.pytest_args))
         sys.exit(errno)
 
 

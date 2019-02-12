@@ -1,7 +1,6 @@
 # !/bin/bash
 
-function build_basic_project_func()
-{
+function build_basic_project_func() {
     cd "${APP_HOME}"
     log_info "[BUILD] mkdir $APP_HOME/var"
     mkdir -p $APP_HOME/var
@@ -10,10 +9,7 @@ function build_basic_project_func()
     mkdir -p $APP_HOME/var/logs
 }
 
-
-
-function build_py_project_func()
-{
+function build_py_project_func() {
     log_info "[BUILD] Start to build $APP_NAME "
 
     python_version=$1
@@ -21,7 +17,7 @@ function build_py_project_func()
 
     build_basic_project_func
 
-    if [[ -z $python_version ]];then
+    if [[ -z $python_version ]]; then
         default_version=2
         log_warn "python_version arg is empty, default: $default_version"
         python_version=$default_version
@@ -41,17 +37,14 @@ function build_py_project_func()
 
 }
 
-
-function validate_python_version_func()
-{
+function validate_python_version_func() {
     python_version=$1
 
     python${python_version} -c 'import sys; print(sys.version_info[:])'
     echo $?
 }
 
-function install_virtualenv_func()
-{
+function install_virtualenv_func() {
 
     python_version=$1
 
@@ -73,8 +66,7 @@ function install_virtualenv_func()
 
 }
 
-function install_py_project_func()
-{
+function install_py_project_func() {
     test_mode=$1
     # enter virtualenv
     source ${PY_VENV}/bin/activate
@@ -92,7 +84,7 @@ function install_py_project_func()
     log_info "python setup.py install --pip-args=${PIP_OPTS}"
     python setup.py install --pip-args="${PIP_OPTS}"
 
-    if [[ "$test_mode" = true ]]; then
+    if [[ "$test_mode" == true ]]; then
         log_info "python setup.py extra --pip-args=${PIP_OPTS}"
         python setup.py extra --pip-args="${PIP_OPTS}"
     fi
@@ -101,8 +93,7 @@ function install_py_project_func()
     deactivate
 }
 
-function clean_py_deps_func()
-{
+function clean_py_deps_func() {
     # enter virtualenv
     source ${PY_VENV}/bin/activate
     # clean .egg folder or file
@@ -113,8 +104,7 @@ function clean_py_deps_func()
     deactivate
 }
 
-function clean_project_func()
-{
+function clean_project_func() {
 
     if [ -d "$PY_VENV" ]; then
         log_info "[CLEAN] clean root project $APP_NAME, delete dir $PY_VENV"
@@ -122,20 +112,18 @@ function clean_project_func()
     fi
 }
 
-function test_case_py_func()
-{
-    # enter virtualenv
-    source ${PY_VENV}/bin/activate
+function test_case_py_func() {
+    args=$1
+
     cd ${APP_HOME}
     log_info "python setup.py test"
 
     printf "\E[0;33;40m ================= [pytest] Start ================== \n"
-    python setup.py test
+    log_info "pytest-args: $args"
+    python setup.py test --pytest-args="$args"
     printf "\E[0;33;40m ================= [pytest] End ================== \n"
 
     printf "\E[0;33;40m ================= [flake8] Start ================== \n"
     flake8
     printf "\E[0;33;40m ================= [flake8] End ================== \n"
-    # exit virtualenv
-    deactivate
 }

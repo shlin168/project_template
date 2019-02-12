@@ -1,5 +1,8 @@
 # !/bin/bash
-export APP_HOME="$(cd "`dirname "$0"`"/..; pwd)"
+export APP_HOME="$(
+    cd "$(dirname "$0")"/..
+    pwd
+)"
 export APP_NAME="$(basename $APP_HOME)"
 
 . "${APP_HOME}/conf/default.conf"
@@ -13,11 +16,10 @@ export APP_NAME="$(basename $APP_HOME)"
 
 LIB_PATH="${APP_HOME}"/lib
 
-function usage()
-{
+function usage() {
     echo "[Installation]
-    Usage: `basename $0` [OPTIONS] ENV (dev|ut|uat|prod)
-     e.g. `basename $0` -p dev
+    Usage: $(basename $0) [OPTIONS] ENV (dev|ut|uat|prod)
+     e.g. $(basename $0) -p dev
     OPTIONS:
        -h|--help                             Show this message
        -b|--build                            Build project
@@ -25,87 +27,96 @@ function usage()
        -r|--rebuild                          Rebuild Project, Clean and Build
        -p|--python                           Python version (Default:2) e.g. --python 2.7
        -d|--clean-deps                       Clean dependences from dist, build, egg_info folder
-       -t|--test                             Execute test case
-
+       -t|--test                             Execute test case, use \"{pytest-args}\" to pass to pytest, e.g. -t\"-s -v\" or --test=\"-s -v\"
+       -s|--skip-build                       Skip build project stage when run Test command
     "
 }
 
-args=`getopt -o hrbcdtp: --long build,clean,rebuild,clean-deps,test,python:,help \
-     -n 'build.sh' -- "$@"`
+args=$(getopt -o hrbcdst::p: --long build,clean,rebuild,clean-deps,skip-build,test::,python:,help \
+    -n 'build.sh' -- "$@")
 
-if [ $? != 0 ] ; then
-  echo "terminating..." >&2 ;
-  exit 1 ;
+if [ $? != 0 ]; then
+    echo "terminating..." >&2
+    exit 1
 fi
 eval set -- "$args"
 
-
-while true ; do
-  case "$1" in
-    -b|--build )
+while true; do
+    case "$1" in
+    -b | --build)
         BUILD_OPT="true"
         shift
         ;;
-    -c|--clean )
+    -c | --clean)
         CLEAN_OPT="true"
         shift
         ;;
-    -r|--rebuild )
+    -r | --rebuild)
         BUILD_OPT="true"
         CLEAN_OPT="true"
         shift
         ;;
-    -p|--python )
+    -p | --python)
         PYTHON_VERSION="$2"
         shift 2
         ;;
-    -d|--clean-deps)
+    -d | --clean-deps)
         CLEAN_DEPS_OPT="true"
         shift
         ;;
-    -t|--test)
+    -t | --test)
         TEST_OPT="true"
+        case "$2" in
+        "")
+            TEST_ARGS=''
+            shift 2
+            ;;
+        *)
+            TEST_ARGS=$2
+            shift 2
+            ;;
+        esac
+        ;;
+    -s | --skip-build)
+        SKIP_BUILD_OPT="true"
         shift
         ;;
-    -h|--help )
+    -h | --help)
         usage
         exit
         ;;
     --)
-        shift ;
+        shift
         break
         ;;
     *)
-        echo "internal error!" ;
+        echo "internal error!"
         exit 1
         ;;
-  esac
+    esac
 done
 
-for arg do
+for arg; do
     ENV=$arg
 done
 
 # check for required args
-if [[ -z ${ENV} ]] && ([[ -n ${BUILD_OPT} ]] || [[ -n ${TEST_OPT} ]]) ; then
-  echo "$(basename $0): missing ENV : ${ENV}"
-  usage
-  exit 1
+if [[ -z ${ENV} ]] && ([[ -n ${BUILD_OPT} ]] || [[ -n ${TEST_OPT} ]]); then
+    echo "$(basename $0): missing ENV : ${ENV}"
+    usage
+    exit 1
 fi
 
 . "${APP_HOME}/build_tool/build.conf"
 
-
-
-function build_project()
-{
+function build_project() {
     test_mode=$1
     if [[ -z "$test_mode" ]]; then
         test_mode=false
     fi
 
     # check exists for ENV variable and config
-    if [[ -z ${ENV} ]] ; then
+    if [[ -z ${ENV} ]]; then
         echo "$(basename $0): missing ENV : ${ENV}"
         usage
         exit 1
@@ -120,22 +131,28 @@ function build_project()
     build_py_project_func "${PYTHON_VERSION}" "${test_mode}"
 }
 
-function clean_project()
-{
+function clean_project() {
     clean_deps
     log_info "Start to clean project"
     clean_project_func
 }
 
-function clean_deps(){
+function clean_deps() {
     log_info "Start to remove dependencies"
     clean_py_deps_func
 }
 
-function test_case(){
-    build_project true
+function test_case() {
+    if [[ -z $SKIP_BUILD_OPT ]]; then
+        log_info "Start to build project by execute test case"
+        build_project true
+    fi
     log_info "Start to execute test case"
-    test_case_py_func
+    . "${APP_HOME}/conf/default.conf"
+    . "${APP_HOME}/conf/env.conf"
+    . "${APP_HOME}/conf/runtime-env-info.sh"
+    . "${APP_HOME}/libexec/run-py-venv.sh"
+    test_case_py_func "$TEST_ARGS"
 }
 # call function
 
