@@ -41,16 +41,18 @@ class PyTest(TestCommand):
     """
         pytest
         usage
-            python setup.py test [-a {arg}|--pytest-args={arg}] [--pip-args="{pip-args}"]
+            python setup.py test [--disable-check] [-a {arg}|--pytest-args={arg}] [--pip-args="{pip-args}"]
         notice
             pip-args: use "" to wrap your pip arguments
     """
     user_options = [('pytest-args=', 'a', "Arguments to pass to py.test"),
+                    ('disable-check', None, 'skip checking requirement'),
                     ('pip-args=', None, 'args for pip')]
 
     def initialize_options(self):
         TestCommand.initialize_options(self)
-        self.pytest_args = []
+        self.pytest_args = ''
+        self.disable_check = None
         self.pip_args = None
 
     def finalize_options(self):
@@ -61,12 +63,16 @@ class PyTest(TestCommand):
             print('pip_args not set, using default https://pypi.org/simple/')
 
     def run(self):
-        for dep in self.distribution.install_requires + self.distribution.tests_require:
-            install_cmd = "pip install {} --disable-pip-version-check --no-cache-dir".format(dep)
-            if self.pip_args is not None:
-                install_cmd += ' ' + self.pip_args
-            os.system(install_cmd)
-        TestCommand.run(self)
+        if self.disable_check is None:
+            for dep in self.distribution.install_requires + self.distribution.tests_require:
+                install_cmd = "pip install {} --disable-pip-version-check --no-cache-dir".format(dep)
+                if self.pip_args is not None:
+                    install_cmd += ' ' + self.pip_args
+                os.system(install_cmd)
+            self.run_tests()
+        else:
+            print('skip checking requirements')
+            self.run_tests()
 
     def run_tests(self):
         import shlex

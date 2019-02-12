@@ -106,13 +106,22 @@ databases.home_dir = /Users/darthbear
 
 ```
 # pytest
-python setup.py test [--pip-args="-i <index-url> --trusted-host=<host>"]
+python setup.py test
 
-# pytest with arguments
-python setup.py test [--pip-args="-i <index-url> --trusted-host=<host>"] -a -vvv
+# pytest - with specific pypi server
+python setup.py test --pip-args="-i <index-url> --trusted-host=<host>"
 
-# only test your module (without modules in py_pkg)
-python setup.py test [--pip-args="-i <index-url> --trusted-host=<host>"] -a tests
+# pytest - disable requirements check
+python setup.py test --disable-check
+
+# pytest - with argument
+python setup.py test --pytest-args="-vvv"
+
+# pytest - with multiple arguments
+python setup.py test --pytest-args="-q -vvv"
+
+# pytest - only test your module (without modules in py_pkg)
+python setup.py test --pytest-args="tests"
 ```
 
 - clean build files
