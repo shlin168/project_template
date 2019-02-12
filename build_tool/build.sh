@@ -152,7 +152,7 @@ function test_case() {
     . "${APP_HOME}/conf/env.conf"
     . "${APP_HOME}/conf/runtime-env-info.sh"
     . "${APP_HOME}/libexec/run-py-venv.sh"
-    test_case_py_func "$TEST_ARGS"
+    test_case_py_func "$TEST_ARGS" "$SKIP_BUILD_OPT"
 }
 # call function
 

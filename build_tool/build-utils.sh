@@ -113,14 +113,19 @@ function clean_project_func() {
 }
 
 function test_case_py_func() {
-    args=$1
+    pytest_args=$1
+    skip_build=$2
 
+    opt_test_args=""
+
+    if [[ -n $skip_build ]]; then
+        opt_test_args="--disable-check "$opt_test_args
+    fi
     cd ${APP_HOME}
-    log_info "python setup.py test"
 
     printf "\E[0;33;40m ================= [pytest] Start ================== \n"
-    log_info "pytest-args: $args"
-    python setup.py test --pytest-args="$args"
+    log_info "python setup.py test --pytest-args="$pytest_args" $opt_test_args"
+    python setup.py test --pytest-args="$pytest_args" $opt_test_args
     printf "\E[0;33;40m ================= [pytest] End ================== \n"
 
     printf "\E[0;33;40m ================= [flake8] Start ================== \n"
