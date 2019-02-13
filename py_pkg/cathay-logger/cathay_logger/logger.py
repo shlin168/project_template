@@ -12,7 +12,7 @@ class Logger(object):
 
     def __set_log_config(self, logfilename):
         logging.logfilename = logfilename
-        logging.config.fileConfig(
+        config.fileConfig(
             self.config_path, disable_existing_loggers=False)
 
     def get_logger(self, logfilename, template_name='root', extra={}):

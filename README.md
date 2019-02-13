@@ -19,9 +19,12 @@ $ ./build_tool/build.sh -h
     OPTIONS:
        -h|--help                             Show this message
        -b|--build                            Build project
-       -c|--clean                            Clean last build result
-       -r|--rebuild                          Rebuild Project
+       -c|--clean                            Clean build result (venv)
+       -r|--rebuild                          Rebuild Project, Clean and Build
        -p|--python                           Python version (Default:2) e.g. --python 2.7
+       -d|--clean-deps                       Clean dependences from dist, build, egg_info folder
+       -t|--test                             Execute test case, use "{pytest-args}" to pass to pytest, e.g. -t"-s -v" or --test="-s -v"
+       -s|--skip-build                       Skip build project stage when run Test command
 ```
 
 - 執行 build
