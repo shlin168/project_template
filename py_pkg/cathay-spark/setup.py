@@ -5,6 +5,8 @@ from setuptools.command.install import install
 from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages
 
+from wheel.bdist_wheel import bdist_wheel
+
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -79,6 +81,35 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
+class BdistWheel(bdist_wheel):
+    """
+        custom bdist_wheel command
+        usage
+            python setup.py bdist_wheel [--pip-args="{pip-args}"]
+        notice
+            pip-args: use "" to wrap your pip arguments
+    """
+    description = "build wheel with specific pypi server"
+    user_options = bdist_wheel.user_options + [('pip-args=', None, 'args for pip')]
+
+    def initialize_options(self):
+        bdist_wheel.initialize_options(self)
+        self.pip_args = None
+
+    def finalize_options(self):
+        bdist_wheel.finalize_options(self)
+        if self.pip_args is None:
+            print('pip_args not set, using default https://pypi.org/simple/')
+
+    def run(self):
+        for dep in self.distribution.install_requires:
+            install_cmd = "pip install {} --disable-pip-version-check --no-cache-dir".format(dep)
+            if self.pip_args is not None:
+                install_cmd += ' ' + self.pip_args
+            os.system(install_cmd)
+        bdist_wheel.run(self)
+
+
 setup(
     name="cathay-spark",
     version="1.0",
@@ -100,5 +131,6 @@ setup(
     tests_require=['pytest'],
     zip_safe=False,
     cmdclass={'install': Install,
-              'test': PyTest}
+              'test': PyTest,
+              'bdist_wheel': BdistWheel}
 )

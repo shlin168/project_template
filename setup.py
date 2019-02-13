@@ -112,6 +112,8 @@ class InstallLibs(Command):
             for pkg in os.listdir(self.lib_path):
                 print(os.path.join(project_dir, self.lib_path, pkg))
                 os.chdir(os.path.join(project_dir, self.lib_path, pkg))
+                if self.pip_args is not None:
+                    build_cmd += " --pip-args='{}'".format(self.pip_args)
                 os.system(build_cmd)
         else:
             raise ValueError('set py_pkg path')
