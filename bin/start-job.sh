@@ -16,7 +16,10 @@ CONF_PATH=${CONF_PATH_JOB}:${CONF_PATH_SPARK}
 
 cd ${APP_HOME}
 
-export APP_TYPE="job"
+if [[ -z $APP_TYPE ]] ; then
+    APP_TYPE="job"
+fi
+export APP_TYPE
 
 # from env.conf
 export ENV=${ENV}
