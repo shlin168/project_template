@@ -7,6 +7,9 @@ function build_basic_project_func() {
 
     log_info "[BUILD] mkdir $APP_HOME/var/logs"
     mkdir -p $APP_HOME/var/logs
+
+    log_info "[BUILD] mkdir $APP_HOME/var/snapshot"
+    mkdir -p $APP_HOME/var/snapshot
 }
 
 function build_py_project_func() {

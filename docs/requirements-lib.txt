@@ -17,4 +17,7 @@ cathay-time-utils==1.0
 py_pkg/cathay-jinja/dist/cathay_jinja-1.0-py2-none-any.whl
 cathay-jinja==1.0
 
+py_pkg/hippo-message-client/dist/hippo_message_client-1.0-py2-none-any.whl
+hippo-message-client==1.0
+
 # cathay user-defined libraries
