@@ -4,6 +4,8 @@ import six
 
 from cathay_spark import SparkBuilder
 
+from cathay_jinja.jinja_injector import JinjaInjector
+
 from cathay.setting.config.config_utils import get_full_keys
 
 logger = logging.getLogger(__name__)
@@ -48,7 +50,8 @@ class SparkSession(object):
         self.spark_configs = get_full_keys(self.config.get("spark", None), "spark")
         for key in self.spark_configs:
             if isinstance(self.spark_configs[key], six.string_types):
-                self.spark_configs[key] = self.spark_configs[key].replace('$(APP_HOME)', os.environ['APP_HOME'])
+                self.spark_configs[key] = JinjaInjector.string_render_args(
+                    content=self.spark_configs[key], env=os.environ)
 
     def _init_spark_session(self):
         '''
