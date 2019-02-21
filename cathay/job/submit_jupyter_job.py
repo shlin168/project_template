@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 class SubmitJupyterJob(SubmitJob):
 
-    def __init__(self, config):
-        super(SubmitJupyterJob, self).__init__(config)
+    def __init__(self, config, exec_date):
+        super(SubmitJupyterJob, self).__init__(config, exec_date)
         self.app_home = os.environ['APP_HOME']
 
     def jupyter_preprocess(self):
@@ -32,13 +32,10 @@ class SubmitJupyterJob(SubmitJob):
             joutput_prefix = self.config.get('jupyter.job.output_prefix')
 
             logger.info("Start submit jupyter job...")
-            date = TimeUtils.cvt_datetime2str(TimeUtils.get_now('dt'), '%Y-%m-%d')
-            yyyymm = TimeUtils.cvt_datetime2str(TimeUtils.get_now('dt'), '%Y%m')
-            db_tbl = 'test'
             pm.execute_notebook(
                 os.path.join(jupyter_path, jexec_file),
-                os.path.join(jupyter_path, '{}_{}.ipynb'.format(joutput_prefix, date)),
-                parameters=dict(yyyymm=yyyymm, db_tbl=db_tbl)
+                os.path.join(jupyter_path, '{}_{}.ipynb'.format(joutput_prefix, self.exec_date)),
+                parameters=dict(exec_date=self.exec_date)
             )
         except Exception:
             raise
