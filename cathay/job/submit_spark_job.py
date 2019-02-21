@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 
 class SubmitSparkJob(SubmitJob, CathaySparkSession):
 
-    def __init__(self, config):
-        super(SubmitSparkJob, self).__init__(config)
+    def __init__(self, config, exec_date):
+        super(SubmitSparkJob, self).__init__(config, exec_date)
 
     def start(self):
         try:
@@ -20,6 +20,7 @@ class SubmitSparkJob(SubmitJob, CathaySparkSession):
             # ===  test start ===
             logger.info(TimeUtils.get_now())
             logger.info(self.config.get('hippo.name'))
+            logger.info('exec_date: {}'.format(self.exec_date))
             # ===  test end ===
 
             # TODO load config
