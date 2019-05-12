@@ -120,7 +120,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     python_requires=">=2.7",
-    install_requires=['Jinja2==2.8'],
+    install_requires=['Jinja2>=2.10.1'],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
